@@ -7,7 +7,6 @@
     -> Retornar usuarios para um vector na main
     -> Mostrar matches ordenadamente para o usuario, como se fosse o TINDER.
     -> Repetir o mesmo processo para manageRequests
-    -> Vou dar um mijão
 */
 
 #define ascii1 " _____ _       _            _____         ___         \n"
@@ -60,14 +59,21 @@ void addUser(Tinder* tinder) {
 }
 
 int login(Tinder* tinder) {
-    bool hasProfiles = tinder_listProfiles(*tinder);
-    if (!hasProfiles)
+    // bool hasProfiles = tinder_listProfiles(*tinder);
+    // if (!hasProfiles)
+    //     return -1;
+
+    VecProfile vecProfile = tinder_getProfiles(*tinder);
+    if (vecProfile.qttProfiles == 0) {
         return -1;
+    }
+
+    profile_printVector(vecProfile);
 
     printf("Select your profile: ");
     int op; scanf("%d", &op);
 
-    if (op < 0 || op >= tinder->nProfiles) {
+    if (op < 0 || op >= tinder->vecProfiles.qttProfiles) {
         printf("Invalid option.\n");
         printf("Press any key to continue.\n");
         getchar();
@@ -86,12 +92,13 @@ int menuProfile() {
     puts("2. Friend requests");
     puts("3. See friends");
     puts("4. Perfect match");
+    puts("5. Probable matches");
     puts("0. Logout");
     
     int op;
     scanf("%d", &op);
 
-    if (op < 0 || op > 4) {
+    if (op < 0 || op > 5) {
         puts("Invalid option");
         return menuProfile();
     }
@@ -100,10 +107,12 @@ int menuProfile() {
 }
 
 void manageRequests(Tinder* tinder, int id) {
-    bool any = tinder_listConnected(*tinder, id, REQUESTED);
-    if (!any) {
+    VecProfile vecProfile = tinder_getConnected(*tinder, id, REQUESTED);
+    if (vecProfile.qttProfiles == 0) {
         return;
     }
+    
+    profile_printVector(vecProfile);
 
     int newId;
     scanf("%d", &newId);
@@ -119,10 +128,12 @@ void manageRequests(Tinder* tinder, int id) {
 }
 
 void addFriend(Tinder* tinder, int id) {
-    bool any = tinder_listConnected(*tinder, id, UNKNOWN);
-    if (!any) {
+    VecProfile vecProfile = tinder_getConnected(*tinder, id, UNKNOWN);
+    if (vecProfile.qttProfiles == 0) {
         return;
     }
+    
+    profile_printVector(vecProfile);
 
     int newId;
     scanf("%d", &newId);
@@ -135,6 +146,10 @@ void addFriend(Tinder* tinder, int id) {
     } else {
         printf("Request sent!\n");
     }
+}
+
+void manageMatches(Tinder tinder) {
+
 }
 
 void profileOptions(Tinder* tinder) {
@@ -158,13 +173,16 @@ void profileOptions(Tinder* tinder) {
                     manageRequests(tinder, id);
                     break;
             case 3:
-                    tinder_listConnected(*tinder, id, FRIEND);
+                    profile_printVector(tinder_getConnected(*tinder, id, FRIEND));
                     break;
             case 4:
                     matched = tinder_perfectMatch(*tinder, id);
                     printf("PERFECT MATCH!\n");
-                    tinder_printProfile(matched);
+                    profile_printProfile(matched);
                     break;
+            case 5:
+                    manageMatches(*tinder);
+
         }
     }    
 }

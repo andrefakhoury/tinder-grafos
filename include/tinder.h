@@ -3,26 +3,12 @@
 
 #include "graph.h"
 #include "error.h"
+#include "profile.h"
 #include <stdbool.h>
-
-#define MAXSTR 256
-#define MAXINFO 6
-
-typedef enum {
-	FRIEND, UNKNOWN, REQUESTING, REQUESTED
-} Status;
-
-typedef struct {
-	int id;
-
-	int age;
-	char name[MAXSTR], info[MAXINFO][MAXSTR];
-} Profile;
 
 typedef struct {
 	Graph* graph;
-	Profile* profiles;
-	size_t nProfiles;
+	VecProfile vecProfiles;
 } Tinder;
 
 Tinder tinder_create(Error* error);
@@ -33,9 +19,13 @@ void tinder_addProfile(Tinder* tinder, Profile profile, Error* error);
 
 void tinder_printProfile(Profile profile);
 
-bool tinder_listProfiles(Tinder tinder);
+VecProfile tinder_getProfiles(Tinder tinder);
 
-bool tinder_listConnected(Tinder tinder, int id, Status status);
+VecProfile tinder_getConnected(Tinder tinder, int id, Status status);
+
+// bool tinder_listProfiles(Tinder tinder);
+
+// bool tinder_listConnected(Tinder tinder, int id, Status status);
 
 Profile tinder_perfectMatch(Tinder tinder, int id);
 

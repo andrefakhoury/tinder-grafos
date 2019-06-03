@@ -65,11 +65,12 @@ bool tinder_listProfiles(Tinder tinder) {
 		return false;
 	}
 
-	printf("Listing profiles:\n");
+	printf("\n[Profile Selection]\nListing profiles:\n");
 	for (int i = 0; i < tinder.nProfiles; i++) {
 		printf("  [%d] %s\n", tinder.profiles[i].id, tinder.profiles[i].name);
 	}
 
+	printf("\n");
 	return true;
 }
 

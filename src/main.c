@@ -2,13 +2,26 @@
 #include "tinder.h"
 #include "error.h"
 
+/*
+    [ TO-DO ]
+    -> Retornar usuarios para um vector na main
+    -> Mostrar matches ordenadamente para o usuario, como se fosse o TINDER.
+    -> Repetir o mesmo processo para manageRequests
+    -> Vou dar um mijão
+*/
+
+#define ascii1 " _____ _       _            _____         ___         \n"
+#define ascii2 "|_   _|_|___ _| |___ ___   |   __|___ ___|  _|___ ___ \n"
+#define ascii3 "  | | | |   | . | -_|  _|  |  |  |  _| .'|  _| . |_ -|\n"
+#define ascii4 "  |_| |_|_|_|___|___|_|    |_____|_| |__,|_| |___|___|\n"
+#define ascii ascii1 ascii2 ascii3 ascii4
+
 int menu() {
-    puts("**MENU**\n");
-    
-    puts("1. Add user");
+    puts(ascii);
+    puts("1. Add user"); 
     puts("2. Login"); // show all profiles
     puts("3. Load from file"); // load from file
-    puts("0. Exit");
+    puts("0. Exit\n");
 
     int op;
     scanf("%d", &op);
@@ -39,6 +52,11 @@ void addUser(Tinder* tinder) {
 
     Error error;
     tinder_addProfile(tinder, profile, &error);
+
+    printf("\nUser \"%s\" created sucessfully!\n", profile.name);
+    printf("Press any key to continue.\n");
+    getchar();
+    getchar();
 }
 
 int login(Tinder* tinder) {
@@ -46,11 +64,15 @@ int login(Tinder* tinder) {
     if (!hasProfiles)
         return -1;
 
-    puts("Select your profile\n");
+    printf("Select your profile: ");
     int op; scanf("%d", &op);
 
-    if (op < 0 || op > tinder->nProfiles) {
-        printf("Invalid option\n");
+    if (op < 0 || op >= tinder->nProfiles) {
+        printf("Invalid option.\n");
+        printf("Press any key to continue.\n");
+        getchar();
+        getchar();
+
         return login(tinder);
     }
 
@@ -183,8 +205,6 @@ void loadFromFile(Tinder* tinder) {
 }
 
 int main() {
-    printf("Welcome to GRAPH TINDER ULTIMATE 2k19 EDITION\n");
-
     Error error;
     Tinder tinder = tinder_create(&error);
 

@@ -21,11 +21,7 @@ void tinder_printProfile(Profile profile);
 
 VecProfile tinder_getProfiles(Tinder tinder);
 
-VecProfile tinder_getConnected(Tinder tinder, int id, Status status);
-
-// bool tinder_listProfiles(Tinder tinder);
-
-// bool tinder_listConnected(Tinder tinder, int id, Status status);
+VecProfile tinder_getConnected(Tinder tinder, int id, int status);
 
 Profile tinder_perfectMatch(Tinder tinder, int id);
 
@@ -35,4 +31,5 @@ void tinder_destroy(Tinder tinder, Error* error);
 
 void tinder_acceptRequest(Tinder tinder, int id, int requestingId, Error* error);
 
+void tinder_refuseRequest(Tinder tinder, int id, int requestingId, Error* error);
 #endif

@@ -29,11 +29,10 @@
 #define BG_CYAN    "\x1b[46m"
 #define BG_WHITE   "\x1b[47m"
 
-char infoDescription[MAXINFO][MAXSTR];
-
-typedef enum {
-	FRIEND, UNKNOWN, REQUESTING, REQUESTED
-} Status;
+#define UNKNOWN 0
+#define REQUESTED 1
+#define REQUESTING 2
+#define FRIEND 3
 
 typedef struct {
 	int id;

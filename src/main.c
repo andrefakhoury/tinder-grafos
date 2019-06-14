@@ -15,6 +15,12 @@
 #define ascii4 "  |_| |_|_|_|___|___|_|    |_____|_| |__,|_| |___|___|\n"
 #define ascii ascii1 ascii2 ascii3 ascii4
 
+void pressKey() {
+    printf("Press any key to continue.\n");
+    getchar();
+    getchar();
+}
+
 int menu() {
     puts(ascii);
     puts("1. Add user"); 
@@ -34,6 +40,7 @@ int menu() {
 }
 
 void addUser(Tinder* tinder) {
+    const char infoDescription[MAXINFO][MAXSTR] = {"City", "Movie", "Team", "Favorite Color", "Music Band", "Neymar Tweet"};
     Profile profile;
 
     printf("Name: ");
@@ -51,9 +58,7 @@ void addUser(Tinder* tinder) {
     tinder_addProfile(tinder, profile, &error);
 
     printf("\nUser \"%s\" created sucessfully!\n", profile.name);
-    printf("Press any key to continue.\n");
-    getchar();
-    getchar();
+    pressKey();
 }
 
 int login(Tinder* tinder) {
@@ -69,9 +74,7 @@ int login(Tinder* tinder) {
 
     if (op < 0 || op >= tinder->vecProfiles.qttProfiles) {
         printf("Invalid option.\n");
-        printf("Press any key to continue.\n");
-        getchar();
-        getchar();
+        pressKey();
 
         return login(tinder);
     }
@@ -103,21 +106,46 @@ int menuProfile() {
 void manageRequests(Tinder* tinder, int id) {
     VecProfile vecProfile = tinder_getConnected(*tinder, id, REQUESTED);
     if (vecProfile.qttProfiles == 0) {
+        printf("You have 0 requests remaining...\n");
+        pressKey();
         return;
     }
-    
-    profile_printVector(vecProfile);
 
-    int newId;
-    scanf("%d", &newId);
+    for (int i = 0; i < vecProfile.qttProfiles; i++) {
+        profile_printProfile(vecProfile.profiles[i]);
+        int newId = vecProfile.profiles[i].id;
+        
+        int option;
+        printf(COLOR_BLUE "|" COLOR_RESET " [1] " COLOR_GREEN "Accept        " COLOR_BLUE "|\n");
+        printf("|" COLOR_RESET " [2] " COLOR_BRRED "Refuse        " COLOR_BLUE "|\n");
+        printf("|" COLOR_RESET " [3] " COLOR_YELLOW "Ignore by now " COLOR_BLUE "|\n");
+        printf("|" COLOR_RESET " [4] Exit          " COLOR_BLUE "|\n");
+        printf(COLOR_RESET "Choose: \n");
+        scanf("%d", &option);
 
-    Error error;
-    tinder_acceptRequest(*tinder, id, newId, &error);
+        Error error;
 
-    if (error.occurred) {
-        printf("Error... %s\n", error.msg);
-    } else {
-        printf("Accepted!\n");
+        switch (option) {
+            case 1:
+                    tinder_acceptRequest(*tinder, id, newId, &error);
+                    printf("Request sucessfully accepted.\n");
+                    pressKey();
+                    break;
+            case 2:
+                    tinder_refuseRequest(*tinder, id, newId, &error);
+                    printf("Request sucessfully denied.\n");
+                    pressKey();
+                    break;
+            case 3:
+                    printf("Request sucessfully skipped.\n");
+                    pressKey();
+                    continue;
+                    break;
+            case 4:
+                    i = vecProfile.qttProfiles;
+                    printf("Exiting...\n");
+                    pressKey();
+        }
     }
 }
 
@@ -217,9 +245,6 @@ void loadFromFile(Tinder* tinder) {
 }
 
 int main() {
-    profile_printProfile(profile_getRandom());
-    return 0;
-
     Error error;
     Tinder tinder = tinder_create(&error);
 
@@ -242,7 +267,6 @@ int main() {
             default:
                     loadFromFile(&tinder);
                     break;
-
         }
     }
 

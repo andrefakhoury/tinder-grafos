@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 typedef struct {
-	Status status;
+	int status;
 	int match;
 } Relation;
 
@@ -60,7 +60,7 @@ VecProfile tinder_getProfiles(Tinder tinder) {
 	return vecProfile;
 }
 
-VecProfile tinder_getConnected(Tinder tinder, int id, Status status) {
+VecProfile tinder_getConnected(Tinder tinder, int id, int status) {
 	VecProfile vecProfile;
 	vecProfile.qttProfiles = 0;
 	vecProfile.profiles = NULL;
@@ -77,7 +77,6 @@ VecProfile tinder_getConnected(Tinder tinder, int id, Status status) {
 			profile_pushVector(&vecProfile, tinder.vecProfiles.profiles[i]);
 		}
 	}
-
 	return vecProfile;
 }
 
@@ -147,6 +146,27 @@ void tinder_acceptRequest(Tinder tinder, int id, int requestingId, Error* error)
 	}
 
 	relation->status = FRIEND;
+	graph_addEdge(tinder.graph, id, requestingId, relation, error);
+	graph_addEdge(tinder.graph, requestingId, id, relation, error);
+}
+
+void tinder_refuseRequest(Tinder tinder, int id, int requestingId, Error* error) {
+	error->occurred = false;
+	
+	if (id < 0 || requestingId < 0 || id >= tinder.vecProfiles.qttProfiles || requestingId >= tinder.vecProfiles.qttProfiles) {
+		error->occurred = true;
+		strcpy(error->msg, "Invalid id");
+		return;
+	}
+
+	Relation* relation = (Relation*)graph_edgeWeight(tinder.graph, id, requestingId, error);
+	if (error->occurred || relation->status == FRIEND || relation->status != REQUESTED) {
+		error->occurred = true;
+		strcpy(error->msg, "Invalid status");
+		return;
+	}
+
+	relation->status = UNKNOWN;
 	graph_addEdge(tinder.graph, id, requestingId, relation, error);
 	graph_addEdge(tinder.graph, requestingId, id, relation, error);
 }

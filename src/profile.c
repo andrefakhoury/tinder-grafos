@@ -40,11 +40,6 @@ void profile_printProfile(Profile profile) {
         printf(COLOR_BLUE "|" COLOR_CYAN " %s: " COLOR_RESET "%-*s " COLOR_BLUE "|\n" COLOR_RESET, infoDescription[i], (int)(58 - strlen(infoDescription[i])), profile.info[i]);
 	}
     printf(COLOR_BLUE "+==============================================================+\n" COLOR_RESET);
-    // printf(COLOR_BLUE "|" COLOR_RESET " [1] " COLOR_GREEN "Accept        " COLOR_BLUE "|\n");
-    // printf("|" COLOR_RESET " [2] " COLOR_BRRED "Refuse        " COLOR_BLUE "|\n");
-    // printf("|" COLOR_RESET " [3] " COLOR_YELLOW "Ignore by now " COLOR_BLUE "|\n");
-    // printf("|" COLOR_RESET " [4] Exit          " COLOR_BLUE "|\n");
-    // printf(COLOR_RESET "Choose: \n");
 }
 
 void profile_printVector(VecProfile vecProfile) {

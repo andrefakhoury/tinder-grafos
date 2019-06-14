@@ -34,8 +34,6 @@ int menu() {
 }
 
 void addUser(Tinder* tinder) {
-    const char infoDescription[MAXINFO][MAXSTR] = {"City", "Movie", "Team", "Favorite Color", "Music Band", "Neymar Tweet"};
-
     Profile profile;
 
     printf("Name: ");
@@ -59,10 +57,6 @@ void addUser(Tinder* tinder) {
 }
 
 int login(Tinder* tinder) {
-    // bool hasProfiles = tinder_listProfiles(*tinder);
-    // if (!hasProfiles)
-    //     return -1;
-
     VecProfile vecProfile = tinder_getProfiles(*tinder);
     if (vecProfile.qttProfiles == 0) {
         return -1;
@@ -223,6 +217,9 @@ void loadFromFile(Tinder* tinder) {
 }
 
 int main() {
+    profile_printProfile(profile_getRandom());
+    return 0;
+
     Error error;
     Tinder tinder = tinder_create(&error);
 

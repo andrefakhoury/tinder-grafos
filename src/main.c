@@ -78,7 +78,6 @@ int login(Tinder* tinder) {
 
         return login(tinder);
     }
-
     return op;
 }
 
@@ -170,8 +169,53 @@ void addFriend(Tinder* tinder, int id) {
     }
 }
 
-void manageMatches(Tinder tinder) {
+void manageMatches(Tinder* tinder, int id) {
+    VecProfile vecProfile = tinder_getConnected(*tinder, id, UNKNOWN);
 
+    // sort vector
+
+    if (vecProfile.qttProfiles == 0) {
+        printf("You already know everyone...\n");
+        pressKey();
+        return;
+    }
+
+    for (int i = 0; i < vecProfile.qttProfiles; i++) {
+        profile_printProfile(vecProfile.profiles[i]);
+        int newId = vecProfile.profiles[i].id;
+        
+        int option;
+        printf(COLOR_BLUE "|" COLOR_RESET " [1] " COLOR_GREEN "Send request        " COLOR_BLUE "|\n");
+        printf("|" COLOR_RESET " [2] " COLOR_YELLOW "Ignore by now " COLOR_BLUE "|\n");
+        printf("|" COLOR_RESET " [3] Exit          " COLOR_BLUE "|\n");
+        printf(COLOR_RESET "Choose: \n");
+        scanf("%d", &option);
+
+        Error error;
+
+        switch (option) {
+            case 1:
+                    tinder_addFriend(*tinder, id, newId, &error);
+
+                    if (error.occurred) {
+                        printf("Error... %s\n", error.msg);
+                    } else {
+                        printf("Request sent!\n");
+                    }
+
+                    pressKey();
+                    break;
+            case 2:
+                    printf("User sucessfully skipped.\n");
+                    pressKey();
+                    continue;
+                    break;
+            case 3:
+                    i = vecProfile.qttProfiles;
+                    printf("Exiting...\n");
+                    pressKey();
+        }
+    }
 }
 
 void profileOptions(Tinder* tinder) {
@@ -203,8 +247,7 @@ void profileOptions(Tinder* tinder) {
                     profile_printProfile(matched);
                     break;
             case 5:
-                    manageMatches(*tinder);
-
+                    manageMatches(tinder, id);
         }
     }    
 }

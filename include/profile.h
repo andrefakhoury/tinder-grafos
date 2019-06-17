@@ -36,7 +36,6 @@
 
 typedef struct {
 	int id;
-
 	int age;
 	char name[MAXSTR], info[MAXINFO][MAXSTR];
 } Profile;

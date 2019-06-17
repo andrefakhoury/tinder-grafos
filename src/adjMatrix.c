@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 /** Macro for an empty element of the matrix */
 #define EMPTY NULL
@@ -157,9 +158,9 @@ void graph_addEdge(Graph* g, int u, int v, void* w, Error* error) {
 
 	error->occurred = false;
 
-	if (g->mat[u][v] != EMPTY) {
-		graph_removeEdge(g, u, v, error);
-	}
+	// if (g->mat[u][v] != EMPTY) {
+	// 	graph_removeEdge(g, u, v, error);
+	// }
 
 	g->mat[u][v] = malloc(g->elemSize);
 	memcpy(g->mat[u][v], w, g->elemSize);

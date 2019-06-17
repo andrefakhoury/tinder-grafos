@@ -146,8 +146,8 @@ void tinder_acceptRequest(Tinder tinder, int id, int requestingId, Error* error)
 	}
 
 	relation->status = FRIEND;
-	graph_addEdge(tinder.graph, id, requestingId, relation, error);
 	graph_addEdge(tinder.graph, requestingId, id, relation, error);
+	graph_addEdge(tinder.graph, id, requestingId, relation, error);
 }
 
 void tinder_refuseRequest(Tinder tinder, int id, int requestingId, Error* error) {

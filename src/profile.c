@@ -15,23 +15,12 @@ void profile_pushVector(VecProfile* vecProfile, Profile prof) {
     vecProfile->profiles[vecProfile->qttProfiles - 1] = prof;
 }
 
-Profile profile_getRandom() {
-    Profile profile;
-    strcpy(profile.name, "AAAAAAAAAAAAAAQAaaaaaaaaaaaaaaaaaaAdemastor AAAAAAAAAAAAAAA");
-    profile.age = rand()%210;
-    profile.id = 2;
-    for (int i = 0; i < MAXINFO; i++) {
-        strcpy(profile.info[i], "");
-        sprintf(profile.info[i], "AAAAA%d", rand()%100);
-    }
-    return profile;
-}
-
 void profile_printProfile(Profile profile) {
 	const char infoDescription[MAXINFO][MAXSTR] = {"City", "Movie", "Team", "Favorite Color", "Music Band", "Neymar Tweet"};
 
     printf(COLOR_BLUE "+==============================================================+\n" COLOR_RESET);
     int len = (60 + strlen(profile.name))/2;
+    
     printf(COLOR_BLUE "|" COLOR_RESET " %*s %-*s " COLOR_BLUE "|\n" COLOR_RESET, len, profile.name, 59 - len, "");
     printf(COLOR_BLUE "|" COLOR_RESET " %d " COLOR_CYAN "years old%-*s" COLOR_BLUE "|\n" COLOR_RESET, profile.age, (int)(51 - log10(profile.age%10 && profile.age != 1 ? profile.age : profile.age+1)), "");
     printf(COLOR_BLUE "+--------------------------------------------------------------+\n" COLOR_RESET);

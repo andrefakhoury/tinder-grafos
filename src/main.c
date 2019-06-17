@@ -15,6 +15,11 @@
 #define ascii4 "  |_| |_|_|_|___|___|_|    |_____|_| |__,|_| |___|___|\n"
 #define ascii ascii1 ascii2 ascii3 ascii4
 
+#define UNKNOWN 0
+#define REQUESTED 1
+#define REQUESTING 2
+#define FRIEND 3
+
 void pressKey() {
     printf("Press any key to continue.\n");
     getchar();
@@ -158,6 +163,12 @@ void addFriend(Tinder* tinder, int id) {
 
     int newId;
     scanf("%d", &newId);
+
+    if (newId == id) {
+        printf("Invalid id.\n");
+        pressKey();
+        return;
+    }
 
     Error error;
     tinder_addFriend(*tinder, id, newId, &error);

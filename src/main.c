@@ -20,6 +20,10 @@
 #define REQUESTING 2
 #define FRIEND 3
 
+int cmp(const void* a, const void* b) {
+    return ((ProfileMatch*) b)->match - ((ProfileMatch*) a)->match;
+}
+
 void pressKey() {
     printf("Press any key to continue.\n");
     getchar();
@@ -45,7 +49,7 @@ int menu() {
 }
 
 void addUser(Tinder* tinder) {
-    const char infoDescription[MAXINFO][MAXSTR] = {"City", "Movie", "Team", "Favorite Color", "Music Band", "Neymar Tweet"};
+    const char infoDescription[MAXINFO][MAXSTR] = {"Gender", "Sexuality",  "City", "Movie", "Team", "Favorite Color", "Music Band", "Neymar Tweet"};
     Profile profile;
 
     printf("Name: ");
@@ -86,14 +90,15 @@ int login(Tinder* tinder) {
     return op;
 }
 
-int menuProfile() {
-    puts("** Profile **\n");
+int menuProfile(Tinder* tinder, int id) {
+    Profile profile = tinder->vecProfiles.profiles[id];
+    printf("\n** %s's Profile **\n", profile.name);
 
-    puts("1. Add friend");
-    puts("2. Friend requests");
-    puts("3. See friends");
-    puts("4. Perfect match");
-    puts("5. Probable matches");
+    puts("1. Add a friend");
+    puts("2. See friend requests");
+    puts("3. See your friends");
+    puts("4. Discover your perfect match");
+    puts("5. Find new friends");
     puts("0. Logout");
     
     int op;
@@ -101,7 +106,7 @@ int menuProfile() {
 
     if (op < 0 || op > 5) {
         puts("Invalid option");
-        return menuProfile();
+        return menuProfile(tinder, id);
     }
 
     return op;
@@ -183,7 +188,15 @@ void addFriend(Tinder* tinder, int id) {
 void manageMatches(Tinder* tinder, int id) {
     VecProfile vecProfile = tinder_getConnected(*tinder, id, UNKNOWN);
 
-    // sort vector
+    Profile currentProfile = tinder->vecProfiles.profiles[id];
+    ProfileMatch profileMatch[vecProfile.qttProfiles];
+
+    for (int i = 0; i < vecProfile.qttProfiles; i++) {
+        profileMatch[i].profile = vecProfile.profiles[i];
+        profileMatch[i].match = tinder_getMatch(currentProfile, vecProfile.profiles[i]);
+    }
+
+    qsort(profileMatch, vecProfile.qttProfiles, sizeof(ProfileMatch), cmp);
 
     if (vecProfile.qttProfiles == 0) {
         printf("You already know everyone...\n");
@@ -192,8 +205,9 @@ void manageMatches(Tinder* tinder, int id) {
     }
 
     for (int i = 0; i < vecProfile.qttProfiles; i++) {
-        profile_printProfile(vecProfile.profiles[i]);
-        int newId = vecProfile.profiles[i].id;
+        profile_printProfile(profileMatch[i].profile);
+        printf("Você e %s tem %.2lf de similaridade!\n", profileMatch[i].profile.name, 100* profileMatch[i].match/(double)11);
+        int newId = profileMatch[i].profile.id;
         
         int option;
         printf(COLOR_BLUE "|" COLOR_RESET " [1] " COLOR_GREEN "Send request        " COLOR_BLUE "|\n");
@@ -229,6 +243,19 @@ void manageMatches(Tinder* tinder, int id) {
     }
 }
 
+void seeFriends(Tinder* tinder, int id) {
+    VecProfile vecProfile = tinder_getConnected(*tinder, id, FRIEND);
+
+    if (vecProfile.qttProfiles == 0) {
+        printf("You have 0 friends.\n");
+        pressKey();
+        return;
+    }
+
+    profile_printVector(vecProfile);
+    pressKey();
+}
+
 void profileOptions(Tinder* tinder) {
     int id = login(tinder);
     if (id < 0) {
@@ -239,7 +266,7 @@ void profileOptions(Tinder* tinder) {
 
     Profile matched;
     while(op) {
-        op = menuProfile();
+        op = menuProfile(tinder, id);
         switch(op) {
             case 0:
                     break;
@@ -250,7 +277,7 @@ void profileOptions(Tinder* tinder) {
                     manageRequests(tinder, id);
                     break;
             case 3:
-                    profile_printVector(tinder_getConnected(*tinder, id, FRIEND));
+                    seeFriends(tinder, id);
                     break;
             case 4:
                     matched = tinder_perfectMatch(*tinder, id);

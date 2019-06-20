@@ -22,10 +22,14 @@ Tinder tinder_create(Error* error) {
 int tinder_getMatch(Profile p1, Profile p2) {
 	int match = 0;
 
-	for (int i = 0; i < MAXINFO; i++) {
+	int atraction_match = (strcmp(p1.info[0], p2.info[1]) == 0) * (strcmp(p2.info[0], p1.info[1]) == 0);
+	int city_match = 2*(strcmp(p1.info[2], p2.info[2]) == 0);
+
+	for (int i = 3; i < MAXINFO; i++) {
 		match += !strcmp(p1.info[i], p2.info[i]);
 	}
 
+	match += atraction_match + city_match;
 	return match;
 }
 

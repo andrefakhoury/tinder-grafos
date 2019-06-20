@@ -7,7 +7,7 @@
 #include <string.h>
 
 #define MAXSTR 256
-#define MAXINFO 6
+#define MAXINFO 8
 
 //macros for colors
 #define COLOR_RED     "\x1b[31m"
@@ -44,6 +44,11 @@ typedef struct {
 	Profile* profiles;
 	size_t qttProfiles;
 } VecProfile;
+
+typedef struct {
+	Profile profile;
+	int match;
+} ProfileMatch;
 
 VecProfile profile_createVector();
 

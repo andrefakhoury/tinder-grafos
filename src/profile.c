@@ -16,6 +16,7 @@ void profile_pushVector(VecProfile* vecProfile, Profile prof) {
 }
 
 void profile_printProfile(Profile profile) {
+    sprintf(profile.name, "%s [%d]", profile.name, profile.id);
 	const char infoDescription[MAXINFO][MAXSTR] = {"Gender", "Attracted by",  "City", "Movie", "Team", "Favorite Color", "Music Band", "Neymar Tweet"};
 
     printf(COLOR_BLUE "+==============================================================+\n" COLOR_RESET);
